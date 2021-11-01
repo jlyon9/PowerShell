@@ -1,0 +1,10 @@
+#Copy all group members from Group 1 to Group 2
+
+#Source: Distribution Group
+Get-DistributionGroupMember -Identity "group@contoso.com" | % {Get-MsolUser -UserPrincipalName $_.WindowsLiveId | Select ObjectId} 
+
+#Destination: Security Group
+% {Add-MsolGroupMember -GroupObjectId 0fxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx -GroupMemberObjectId $_.ObjectId -GroupMemberType User}
+
+#Combined:
+Get-DistributionGroupMember -Identity "group@contoso.com" | % {Get-MsolUser -UserPrincipalName $_.WindowsLiveId | Select ObjectId} | % {Add-MsolGroupMember -GroupObjectId 0fxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx -GroupMemberObjectId $_.ObjectId -GroupMemberType User}
