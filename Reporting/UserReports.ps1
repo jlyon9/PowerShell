@@ -52,3 +52,7 @@ Get-Mailbox -Identity "email@contoso.com" -RecipientType 'UserMailbox' | % {Get-
 
 # Get All Mailboxes and Delegates
 Get-Mailbox -ResultSize Unlimited -RecipientType 'UserMailbox' | % {Get-MailboxPermission -Identity $_.Identity | ? {$_.User -match "@"} | Select @{Expression={$_.Identity};label='PrimaryUser'},@{Expression={$_.User};label='Delegate'}} | Export-CSV C:\Temp\maildelegates.csv
+
+# Get Distribution Group members
+Get-DistributionGroupMember -Identity "[DistributionGroupName]" | Select PrimarySmtpAddress, DisplayName | Export-Csv -NoTypeInformation -Path ('C:\Temp\dgroupmembers.csv')
+
