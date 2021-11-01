@@ -1,0 +1,5 @@
+$usr = email@contoso.com
+Connect-MsolService
+
+Remove-MsolUser -UserPrincipalName $usr
+Remove-MsolUser -UserPrincipalName $usr -RemoveFromRecycleBin
