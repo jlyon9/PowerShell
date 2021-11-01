@@ -1,0 +1,7 @@
+# Add csv of users to shared mailbox
+
+#import the CSV file from the local drive
+$users = import-csv "C:\temp\[filename].csv"
+
+#add users to the shared mailbox - note - the column header for email addresses must be "email", or modify it below:
+$users | % {Add-mailboxpermission -identity "[sharedmailbox]@contoso.com" -user $_.email -accessrights FullAccess}
