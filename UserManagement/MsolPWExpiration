@@ -1,0 +1,5 @@
+#Get password expiry policy:
+Get-MsolUser -UserPrincipalName '[user]@contoso.com' | Select PasswordNeverExpires
+
+#Set password expiry policy:
+Set-MsolUser -UserPrincipalName '[user]@contoso.com' -PasswordNeverExpires $true
