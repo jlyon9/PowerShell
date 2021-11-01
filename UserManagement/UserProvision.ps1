@@ -90,24 +90,12 @@ Start-Sleep -s 180
 #Add to groups
 $userOID = Import-Csv -Path $ScriptDir\importlog.csv | select -ExpandProperty ObjectId
 
-#MS Project Resources
+#Group1
 Add-MsolGroupMember -GroupObjectId 2xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx -GroupMemberType User -GroupMemberObjectId $UserOID
 
-#Indigo-SSO
+#Group2
 Add-MsolGroupMember -GroupObjectId 2xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx -GroupMemberType User -GroupMemberObjectId $UserOID
 
-#Zoom-SSO
-Add-MsolGroupMember -GroupObjectId 2xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx -GroupMemberType User -GroupMemberObjectId $UserOID
-
-#Password Reset Enabled
-Add-MsolGroupMember -GroupObjectId 2xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx -GroupMemberType User -GroupMemberObjectId $UserOID
-
-#Atlassian-SSO
-Add-MsolGroupMember -GroupObjectId 2xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx -GroupMemberType User -GroupMemberObjectId $UserOID
-
-#Intune for Windows PC users, Rapid7, and Cisco Umbrella
-If (($Compbrand -eq "Windows PC") -or ($Compbrand -eq "Surface"))
-{
 Set-MsolUserLicense -UserPrincipalName $email -AddLicenses "Contoso:EMSPREMIUM" 
 Add-MsolGroupMember -GroupObjectId 2xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx -GroupMemberType User -GroupMemberObjectId $UserOID
 }
