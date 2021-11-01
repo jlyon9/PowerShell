@@ -1,17 +1,8 @@
+#Assuming exitchecklist exists with relevant fields
+
 Add-Type -AssemblyName System.web
 
-#Credentials
-$username = "service@account.com"
-$securePwd = Get-Content "D:\OD\OneDrive\Documents\Powershell\TerminateUser\service_account.txt" | ConvertTo-SecureString
-$credObject = New-Object System.Management.Automation.PSCredential -ArgumentList $username, $securePwd
-
-#Connections
-Connect-MsolService -Credential $credObject
-Connect-AzureAD -Credential $credObject
-$Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri https://outlook.office365.com/powershell-liveid/ -Credential $credObject -Authentication Basic -AllowRedirection
-Import-PSSession $Session -AllowClobber
-
-$path = "D:\OD\OneDrive\Documents\Flow\ExitChecklist\"
+$path = "D:\ExitChecklist\"
 cd $path
 
 #Import XMLs
