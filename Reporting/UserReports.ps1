@@ -45,7 +45,7 @@ Get-AzureAdUser -All $true | ? {$_.ObjectId -in $AzureUsers.ObjectId}  | Select 
 $Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri https://ps.outlook.com/powershell/ -Credential $LiveCred -AllowRedirection
 
 # Get last login time
-Get-MsolUser -All | Where {$_.isLicensed -eq $true} | % {Get-Mailbox -Identity $_.UserPrincipalName} | % {Get-MailboxStatistics $_.Identity | Select DisplayName, LastLogonTime} | Export-CSV $Home\Desktop\LastLogonDate.csv
+Get-MsolUser -All | ? {$_.isLicensed -eq $true} | % {Get-Mailbox -Identity $_.UserPrincipalName} | % {Get-MailboxStatistics $_.Identity | Select DisplayName, LastLogonTime} | Export-CSV $Home\Desktop\LastLogonDate.csv
 
 # Get Individual mailbox delegates
 Get-Mailbox -Identity "email@contoso.com" -RecipientType 'UserMailbox' | % {Get-MailboxPermission -Identity $_.Identity | ? {$_.User -match "@"} | Select @{Expression={$_.Identity};label='PrimaryUser'},@{Expression={$_.User};label='Delegate'}}
