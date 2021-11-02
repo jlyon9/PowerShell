@@ -5,7 +5,7 @@ $devices = Get-MsolDevice -All -ReturnRegisteredOwners
 $devices | Export-csv "C:\Temp\AzureDevices.csv"
 
 #current users
-$currentusers = Get-MsolUser -All | Where-Object { $_.isLicensed -eq "True"} | Select-Object DisplayName, UserPrincipalName
+$currentusers = Get-MsolUser -All | ? { $_.isLicensed -eq "True"} | Select-Object DisplayName, UserPrincipalName
 
 $devices | Select RegisteredOwners,DisplayName | ? {$_.RegisteredOwners -in $currentusers.UserPrincipalName}
 
