@@ -1,6 +1,20 @@
 Add-Type -AssemblyName System.web
 Import-Module -Name PSGSuite
 
+function connectMS{
+    #Credentials
+    $username = "offboard@contoso.com"
+    $securePwd = Get-Content "C:\crds\offboard.txt" | ConvertTo-SecureString
+    $UserCredential = New-Object System.Management.Automation.PSCredential -ArgumentList $username, $securePwd
+
+    #Connections
+    Connect-MsolService -Credential $UserCredential
+    Connect-AzureAD -Credential $UserCredential
+    Connect-SPOService -Url https://contoso-admin.sharepoint.com -Credential $UserCredential
+    $Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri https://outlook.office365.com/powershell-liveid/ -Credential $UserCredential -Authentication Basic -AllowRedirection
+    Import-PSSession $Session -AllowClobber
+}
+
 function evalterm{
 param ( [string]$tdate )
 
