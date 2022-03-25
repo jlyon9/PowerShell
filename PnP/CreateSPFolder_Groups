@@ -1,0 +1,75 @@
+if ((Get-PnPConnection) -ne $null){Disconnect-PnPOnline}
+
+#User entry for team site
+$teamsite = Read-Host "Enter the name of the team site you wish to create a folder under"
+Connect-PnPOnline -Url https://contoso.sharepoint.com/sites/$teamsite -Interactive
+
+#Get inputs
+Write-Host "Enter the full path of the folder you wish to create"
+Write-Host "eg; \New Folder = Shared Documents\New Folder"
+Write-Host "    \Misc\New Folder = Shared Documents\Misc\New Folder"
+$folderinput = Read-Host " "
+$foldername = ($folderinput.Split("\"))[-1]
+$folderarray = $folderinput.Split("\")
+$folderpath = "Shared Documents"
+
+#Check if folder is nested
+if($folderarray.count -eq 2){
+    #folder is under root
+    $folderpath = "Shared Documents\"}
+else{
+    #folder is nested
+    $folderpath = "Shared Documents\" + $folderarray[-2]
+}
+
+#add users to permission groups
+$rwusers = Read-Host "Enter any users (use UPN) that require edit permissions to the folder (comma-separated)"
+$rousers = Read-Host "Enter any users (use UPN) that require read-only permissions to the folder (comma-separated)"
+#input example: user@contoso.com, jason.bourne@contoso.com
+#inputs to arrays
+$rwarray = $rwusers -split ',\s*'
+$roarray = $rousers -split ',\s*'
+
+#placeholder: if subfolder, check if primary folder exists
+
+<#Removed
+#$titlecase = (Get-Culture).TextInfo
+#Strings to titlecase
+#$ts_titlecase = $titlecase.ToTitleCase($teamsite)
+#>
+
+#create folder
+#eg Add-PnPFolder -Name "Pnp Test" -Folder "Shared Documents"
+#eg Add-PnPFolder -Name "Pnp Test" -Folder "Shared Documents/Shared"
+$folderurl = $folderpath.replace('\','/')
+Add-PnPFolder -Name "$foldername" -Folder "$folderurl"
+
+#Group vars
+$rwdesc = $folderpath.Replace("Shared Documents","docs") + "\$foldername (Edit)"
+$rwtitle = "$teamsite-" + $rwdesc.Replace("\","-")
+$rodesc = $folderpath.Replace("Shared Documents","docs") + "\$foldername (Read)"
+$rotitle = "$teamsite-" + $rodesc.Replace("\","-")
+
+#Create groups
+New-PnPGroup -Title "$rwtitle" -Description $rwdesc
+New-PnPGroup -Title "$rotitle" -Description $rodesc
+
+#Add users to group(s)
+$rwarray | %{Add-PnPGroupMember -LoginName "$_" -Group "$rwtitle"}
+$roarray | %{Add-PnpGroupMember -LoginName "$_" -Group "$rotitle"}
+
+#Add-PnPGroupMember -LoginName 'user@contoso.com' -Group "teamsite-docs-PnPTest (RW)"
+
+# set permissions on group
+# notes: 
+# -Identity must point to the full path of the folder you are setting permissions on
+# -List (for "Shared Documents" == "Documents"
+$folderurl = $folderpath.Replace("\","/")
+Set-PnPFolderPermission -Identity "/sites/$teamsite/$folderurl/$foldername" -AddRole 'Edit' -Group "$rwtitle" -List "Documents"
+Set-PnPFolderPermission -Identity "/sites/$teamsite/$folderurl/$foldername" -AddRole 'Read' -Group "$rotitle" -List "Documents"
+
+
+<# Reference:
+Contribute vs edit
+https://sharepointmaven.com/edit-vs-contribute-permission-levels-in-sharepoint-online/#:~:text=Edit%3A%20Can%20add%2C%20edit%20and,add%2C%20edit%20and%20delete%20lists.
+#>
