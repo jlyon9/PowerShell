@@ -11,7 +11,6 @@ Write-Host "    \Misc\New Folder = Shared Documents\Misc\New Folder"
 $folderinput = Read-Host " "
 $foldername = ($folderinput.Split("\"))[-1]
 $folderarray = $folderinput.Split("\")
-$folderpath = "Shared Documents"
 
 #Check if folder is nested
 ### NOTE ### - Only supports two levels, eg: \Shared Documents\Level 1\Level 2
@@ -30,14 +29,6 @@ $rousers = Read-Host "Enter any users (use UPN) that require read-only permissio
 #inputs to arrays
 $rwarray = $rwusers -split ',\s*'
 $roarray = $rousers -split ',\s*'
-
-#placeholder: if subfolder, check if primary folder exists
-
-<#Removed
-#$titlecase = (Get-Culture).TextInfo
-#Strings to titlecase
-#$ts_titlecase = $titlecase.ToTitleCase($teamsite)
-#>
 
 #create folder
 #eg Add-PnPFolder -Name "Pnp Test" -Folder "Shared Documents"
@@ -62,7 +53,7 @@ $roarray | %{Add-PnpGroupMember -LoginName "$_" -Group "$rotitle"}
 # set permissions on group
 # notes: 
 # -Identity must point to the full path of the folder you are setting permissions on
-# -List (for "Shared Documents" == "Documents"
+# -List for "Shared Documents" == "Documents"
 $folderurl = $folderpath.Replace("\","/")
 Set-PnPFolderPermission -Identity "/sites/$teamsite/$folderurl/$foldername" -AddRole 'Edit' -Group "$rwtitle" -List "Documents"
 Set-PnPFolderPermission -Identity "/sites/$teamsite/$folderurl/$foldername" -AddRole 'Read' -Group "$rotitle" -List "Documents"
