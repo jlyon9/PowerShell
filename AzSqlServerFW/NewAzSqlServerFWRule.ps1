@@ -6,9 +6,9 @@ If ($null -eq $Connection) {$Connection = Connect-AzAccount}
 
 Write-Host @"
 Do you want to create a firewall rule for:
-    [1] A single sql server
-    [2] All servers in a resource group
-    [3] All servers in a subscription
+    [1] A single SQL server
+    [2] All SQL servers in a resource group
+    [3] All SQL servers in a subscription
 "@
 
 $grouptype = Read-Host "    Enter a number for your selection [1-3]"
